@@ -1,0 +1,287 @@
+{
+   "type": "collection.insomnia.rest/5.0",
+   "schema_version": "5.1",
+   "name": "Desafio QA - Restful-Booker",
+   "meta": {
+      "id": "wrk_2fdd7a32825f49e68960008aeca4925e",
+      "created": 1778849619148,
+      "modified": 1778849619148,
+      "description": ""
+   },
+   "collection": [
+      {
+         "name": "Authentication",
+         "meta": {
+            "id": "fld_42e3af5945db4cd6a2585d8a5a049dd0",
+            "created": 1778849679288,
+            "modified": 1778855138733,
+            "sortKey": -1778849679288,
+            "description": ""
+         },
+         "children": [
+            {
+               "url": "{{base_url}}/auth",
+               "name": "Auth",
+               "meta": {
+                  "id": "req_4739a8174a344c47bdfcb4dedf9dfbfa",
+                  "created": 1778849663851,
+                  "modified": 1778854707787,
+                  "isPrivate": false,
+                  "description": "",
+                  "sortKey": -1778849691079
+               },
+               "method": "POST",
+               "body": {
+                  "mimeType": "application/json",
+                  "text": "{\n\t\"username\": \"admin\",\n\t\"password\": \"password123\"\n}"
+               },
+               "headers": [
+                  {
+                     "name": "Content-Type",
+                     "value": "application/json"
+                  }
+               ],
+               "scripts": {
+                  "afterResponse": "insomnia.test(\"Status code is 200\", function () {\n    insomnia.response.to.have.status(200);\n});\n\nvar jsonData = insomnia.response.json();\ninsomnia.environment.set(\"token\", jsonData.token);\n\ninsomnia.test(\"Token gerado com sucesso\", function () {\n    insomnia.expect(jsonData.token).to.not.be.undefined;\n});"
+               },
+               "settings": {
+                  "renderRequestBody": true,
+                  "encodeUrl": true,
+                  "followRedirects": "global",
+                  "cookies": {
+                     "send": true,
+                     "store": true
+                  },
+                  "rebuildPath": true
+               }
+            }
+         ]
+      },
+      {
+         "name": "Gestão de Reservas",
+         "meta": {
+            "id": "fld_f99e4959149c4a949a1bfce00f6d8ca8",
+            "created": 1778849704574,
+            "modified": 1778860862224,
+            "sortKey": -1778849704574,
+            "description": ""
+         },
+         "children": [
+            {
+               "url": "{{base_url}}/booking/{{bookingid}}",
+               "name": "update booking",
+               "meta": {
+                  "id": "req_7a1acf2ddbad43e888f0e1ac4145be15",
+                  "created": 1778851408161,
+                  "modified": 1778855029286,
+                  "isPrivate": false,
+                  "description": "",
+                  "sortKey": -1778851425920
+               },
+               "method": "PUT",
+               "body": {
+                  "mimeType": "application/json",
+                  "text": "{\n\t\"firstname\": \"James\",\n\t\"lastname\": \"Brown\",\n\t\"totalprice\": 111,\n\t\"depositpaid\": true,\n\t\"bookingdates\": {\n\t\t\"checkin\": \"2018-01-01\",\n\t\t\"checkout\": \"2019-01-01\"\n\t},\n\t\"additionalneeds\": \"Breakfast\"\n}"
+               },
+               "headers": [
+                  {
+                     "name": "Content-Type",
+                     "value": "application/json"
+                  },
+                  {
+                     "name": "Accept",
+                     "value": "application/json"
+                  },
+                  {
+                     "name": "Cookie",
+                     "value": "token={{token}}"
+                  }
+               ],
+               "authentication": {
+                  "type": "bearer",
+                  "disabled": false
+               },
+               "scripts": {
+                  "afterResponse": "insomnia.test(\"Status code is 200\", function () {    insomnia.response.to.have.status(200);\n});\n\nvar jsonData = insomnia.response.json();\ninsomnia.test(\"Valida se a atualização do nome ocorreu\", function () {    insomnia.expect(jsonData.firstname).to.eql(\"James\");\n});"
+               },
+               "settings": {
+                  "renderRequestBody": true,
+                  "encodeUrl": true,
+                  "followRedirects": "global",
+                  "cookies": {
+                     "send": true,
+                     "store": true
+                  },
+                  "rebuildPath": true
+               }
+            },
+            {
+               "url": "{{base_url}}/booking",
+               "name": "create booking",
+               "meta": {
+                  "id": "req_0c518f6e1f5c4920b9fe2e5f82bb214b",
+                  "created": 1778851453483,
+                  "modified": 1778855018061,
+                  "isPrivate": false,
+                  "description": "",
+                  "sortKey": -1778851426020
+               },
+               "method": "POST",
+               "body": {
+                  "mimeType": "application/json",
+                  "text": "{\n\t\"firstname\": \"Jim\",\n\t\"lastname\": \"Brown\",\n\t\"totalprice\": 111,\n\t\"depositpaid\": true,\n\t\"bookingdates\": {\n\t\t\"checkin\": \"2018-01-01\",\n\t\t\"checkout\": \"2019-01-01\"\n\t},\n\t\"additionalneeds\": \"Breakfast\"\n}"
+               },
+               "headers": [
+                  {
+                     "name": "Content-Type",
+                     "value": "application/json"
+                  }
+               ],
+               "scripts": {
+                  "afterResponse": "insomnia.test(\"Status code is 200\", function () {    insomnia.response.to.have.status(200);\n});\n\nvar jsonData = insomnia.response.json();\ninsomnia.environment.set(\"bookingid\", jsonData.bookingid);\n\ninsomnia.test(\"Valida se o nome da reserva está correto\", function () {    insomnia.expect(jsonData.booking.firstname).to.eql(\"Jim\");\n});"
+               },
+               "settings": {
+                  "renderRequestBody": true,
+                  "encodeUrl": true,
+                  "followRedirects": "global",
+                  "cookies": {
+                     "send": true,
+                     "store": true
+                  },
+                  "rebuildPath": true
+               }
+            },
+            {
+               "url": "{{base_url}}/booking/{{bookingid}}",
+               "name": "get booking",
+               "meta": {
+                  "id": "req_12ff7c3bb6b245c1836e17dcd3ead75c",
+                  "created": 1778851486464,
+                  "modified": 1778860841645,
+                  "isPrivate": false,
+                  "description": "",
+                  "sortKey": -1778851426120
+               },
+               "method": "GET",
+               "settings": {
+                  "renderRequestBody": true,
+                  "encodeUrl": true,
+                  "followRedirects": "global",
+                  "cookies": {
+                     "send": true,
+                     "store": true
+                  },
+                  "rebuildPath": true
+               }
+            },
+            {
+               "url": "{{base_url}}/booking/{{bookingid}}",
+               "name": "delete booking",
+               "meta": {
+                  "id": "req_496e263118854e19aaa13ff6bef48042",
+                  "created": 1778851874990,
+                  "modified": 1778860859713,
+                  "isPrivate": false,
+                  "description": "",
+                  "sortKey": -1778851426220
+               },
+               "method": "DELETE",
+               "headers": [
+                  {
+                     "name": "Content-Type",
+                     "value": "application/json"
+                  },
+                  {
+                     "name": "Cookie",
+                     "value": "token={{token}}",
+                     "disabled": false
+                  }
+               ],
+               "scripts": {
+                  "afterResponse": "insomnia.test(\"Status code is 201 (Created/Deleted)\", function () {\n    insomnia.response.to.have.status(201); \n});"
+               },
+               "settings": {
+                  "renderRequestBody": true,
+                  "encodeUrl": true,
+                  "followRedirects": "global",
+                  "cookies": {
+                     "send": true,
+                     "store": true
+                  },
+                  "rebuildPath": true
+               }
+            }
+         ]
+      },
+      {
+         "name": "Tratamento de Erros e Validações",
+         "meta": {
+            "id": "fld_306e52a31b0e4d66a22e607f343db4d0",
+            "created": 1778849717178,
+            "modified": 1778855104032,
+            "sortKey": -1778849717178,
+            "description": ""
+         },
+         "children": [
+            {
+               "url": "{{base_url}}/booking",
+               "name": "create booking - error",
+               "meta": {
+                  "id": "req_615f4c3888f944008066b8b9c6bfd929",
+                  "created": 1778851519227,
+                  "modified": 1778855101760,
+                  "isPrivate": false,
+                  "description": "",
+                  "sortKey": -1778851534711
+               },
+               "method": "POST",
+               "body": {
+                  "mimeType": "application/json",
+                  "text": "{\n\t\"firstname\": \"Jim\",\n\t\n\t\"totalprice\": 111,\n\t\"depositpaid\": true,\n\t\"bookingdates\": {\n\t\t\"checkin\": \"2018-01-01\",\n\t\t\"checkout\": \"2019-01-01\"\n\t},\n\t\"additionalneeds\": \"Breakfast\"\n}"
+               },
+               "headers": [
+                  {
+                     "name": "Content-Type",
+                     "value": "application/json"
+                  }
+               ],
+               "scripts": {
+                  "afterResponse": "insomnia.test(\"Status code deve ser 500 (Internal Server Error)\", function () {    insomnia.response.to.have.status(500);\n});\n\ninsomnia.test(\"Tempo de resposta menor que 2000ms\", function () {    insomnia.expect(insomnia.response.responseTime).to.be.below(2000);\n});"
+               },
+               "settings": {
+                  "renderRequestBody": true,
+                  "encodeUrl": true,
+                  "followRedirects": "global",
+                  "cookies": {
+                     "send": true,
+                     "store": true
+                  },
+                  "rebuildPath": true
+               }
+            }
+         ]
+      }
+   ],
+   "cookieJar": {
+      "name": "Default Jar",
+      "meta": {
+         "id": "jar_8e8e278773ef167fdf9a0da630c96e85395f516a",
+         "created": 1778849619183,
+         "modified": 1778860862221
+      }
+   },
+   "environments": {
+      "name": "Base Environment",
+      "meta": {
+         "id": "env_8e8e278773ef167fdf9a0da630c96e85395f516a",
+         "created": 1778849619182,
+         "modified": 1778860862222,
+         "isPrivate": false
+      },
+      "data": {
+         "base_url": "https://restful-booker.herokuapp.com",
+         "token": "5b97508ab1d68b7",
+         "bookingid": 1497
+      }
+   }
+}
